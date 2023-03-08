@@ -1,5 +1,8 @@
 # Modelo de Skill Alexa para integrar o Chat da OpenAI
-Enquanto não sai a API pro ChatGPT, resolvi fazer uma skill da Alexa utilizando o irmão mais velho (e também incrível) de Chatbot da OpenAI, com GPT-3 e modelo para texto DaVinci-003.
+
+Este projeto começou utilizando o irmão mais velho (e também incrível) de Chatbot da OpenAI, com GPT-3 e modelo para texto DaVinci-003.
+
+Agora que o ChatGPT foi liberado na API da OpenAI, a skill foi atualizada para tirar proveito do recurso de chat e do modelo de texto **gpt-3.5-turbo**.
 
 # Instruções
 - Crie uma conta e uma chave de autenticação de API na OpenAI: https://beta.openai.com/account/api-keys
