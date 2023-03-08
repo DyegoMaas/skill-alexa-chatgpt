@@ -10,9 +10,7 @@ const keys = require('./keys');
 const config = new Configuration({
     apiKey: keys.OPEN_AI_KEY
 });
-
-const openai = new OpenAIApi(config);
-
+const openai = new OpenAIApi(config); 
 const DOCUMENT_ID = "resposta-visual";
 
 const datasource = {
@@ -60,7 +58,7 @@ const LaunchRequestHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     handle(handlerInput) {
-        const speakOutput = 'Bem vindo ao chat avançado com a "Open ei ai"! Para interagir diga a palavra chave "pergunta", seguida de sua pergunta!';
+        const speakOutput = 'Bem vindo ao modo avançado! Para interagir diga a palavra chave "pergunta", seguida de sua pergunta!';
         
         if (Alexa.getSupportedInterfaces(handlerInput.requestEnvelope)['Alexa.Presentation.APL']) {
             datasource.headlineTemplateData.properties.textContent.primaryText.text = "Bem vindo ao Modo Avançado."
@@ -86,29 +84,27 @@ const AskOpenAIIntentHandler = {
         const question =
             Alexa.getSlotValue(handlerInput.requestEnvelope, 'question');
 
-        const response = await openai.createCompletion({
-            model: 'text-davinci-003',
-            prompt: question,
-            temperature: 0,
-            max_tokens: 1500,
-            top_p: 1,
-            frequency_penalty: 0.0,
-            presence_penalty: 0.0
-        });
+        const response = await openai.createChatCompletion({
+            model: 'gpt-3.5-turbo',
+            messages: [
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": question}
+            ],
+            temperature: 0.6,
+        });        
 
-        const speakOutput = response.data.choices[0].text +
+        const speakOutput = response.data.choices[0].message.content +
             '.\nGostaria de perguntar mais alguma coisa?';
-            
+  
         if (Alexa.getSupportedInterfaces(handlerInput.requestEnvelope)['Alexa.Presentation.APL']) {
             
-            datasource.headlineTemplateData.properties.textContent.primaryText.text = response.data.choices[0].text
+            datasource.headlineTemplateData.properties.textContent.primaryText.text = response.data.choices[0].message.content
             
             // generate the APL RenderDocument directive that will be returned from your skill
             const aplDirective = createDirectivePayload(DOCUMENT_ID, datasource);
             // add the RenderDocument directive to the responseBuilder
             handlerInput.responseBuilder.addDirective(aplDirective);
         }
-
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -117,13 +113,14 @@ const AskOpenAIIntentHandler = {
     }
 };
 
+
 const HelpIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speakOutput = 'Esta skill comunica com a API da OpenAI utilizando o modelo text-davinci-003.. ?';
+        const speakOutput = `Esta skill comunica com a API da OpenAI utilizando o modelo gpt-3.5-turbo.. ?`;
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
