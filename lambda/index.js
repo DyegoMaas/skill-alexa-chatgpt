@@ -58,7 +58,7 @@ const LaunchRequestHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     handle(handlerInput) {
-        const speakOutput = 'Bem vindo ao modo avançado! Para interagir diga a palavra chave "pergunta", seguida de sua pergunta!';
+        const speakOutput = 'Bem vindo ao chat avançado com a "Open ei ai"! Para interagir diga a palavra chave "pergunta", seguida de sua pergunta!';
         
         if (Alexa.getSupportedInterfaces(handlerInput.requestEnvelope)['Alexa.Presentation.APL']) {
             datasource.headlineTemplateData.properties.textContent.primaryText.text = "Bem vindo ao Modo Avançado."
@@ -91,6 +91,7 @@ const AskOpenAIIntentHandler = {
                 {"role": "user", "content": question}
             ],
             temperature: 0.6,
+            max_tokens: 240 // para evitar respostas longas demais
         });        
 
         const speakOutput = response.data.choices[0].message.content +
